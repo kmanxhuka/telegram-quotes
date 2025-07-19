@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telegram Quotes</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .quote-container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      max-width: 700px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .quote-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .quote-title::after {
+      content: "";
+      display: block;
+      width: 80px;
+      height: 2px;
+      background: #ccc;
+      margin: 10px auto 0;
+    }
+
+    .quote-text {
+      font-family: 'Amiri', serif;
+      font-size: 1.35rem;
+      color: #222;
+      margin-top: 20px;
+      line-height: 1.6;
+      white-space: pre-wrap; /* preserve new lines */
+    }
+
+    .progress-bar {
+      margin-top: 25px;
+      height: 5px;
+      background: #ddd;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #0077ff;
+      width: 100%;
+      transition: width 1s linear;
+    }
+  </style>
+</head>
+<body>
+  <div class="quote-container">
+    <div class="quote-title" id="quote-title">Loading...</div>
+    <div class="quote-text" id="quote-text">Please wait</div>
+    <div class="progress-bar">
+      <div class="progress-bar-fill" id="progress-bar-fill"></div>
+    </div>
+  </div>
+
+  <script>
+    const titleEl = document.getElementById('quote-title');
+    const textEl = document.getElementById('quote-text');
+    const progressFill = document.getElementById('progress-bar-fill');
+
+    const refreshInterval = 30000; // 30 seconds
+    let timer = null;
+    let progress = 100;
+
+    async function fetchQuote() {
+      try {
+        const res = await fetch('/quotes');
+        if (!res.ok) throw new Error('Network response not ok');
+        const data = await res.json();
+
+        if (data.length > 0) {
+          const quote = data[0];
+          titleEl.textContent = quote.title;
+          textEl.innerHTML = quote.html;
+        }
+      } catch (err) {
+        titleEl.textContent = 'Error';
+        textEl.textContent = 'Failed to fetch quote.';
+      }
+    }
+
+    function startProgress() {
+      progress = 100;
+      progressFill.style.width = '100%';
+
+      timer = setInterval(() => {
+        progress -= 1000 / (refreshInterval / 1000);
+        if (progress <= 0) {
+          progress = 0;
+          clearInterval(timer);
+        }
+        progressFill.style.width = progress + '%';
+      }, 1000);
+    }
+
+    async function refreshQuote() {
+      await fetchQuote();
+      startProgress();
+    }
+
+    // Initial load
+    refreshQuote();
+
+    // Refresh every 30 seconds
+    setInterval(refreshQuote, refreshInterval);
+  </script>
+</body>
+</html>

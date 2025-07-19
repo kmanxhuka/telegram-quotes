@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Telegram Quotes</title>
+
+<!-- Load Josefin Sans and Amiri fonts from Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Amiri&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    background: #f0f0f0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #quote-container {
+    background: white;
+    padding: 2rem;
+    max-width: 700px;
+    width: 90%;
+    box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
+    border-radius: 10px;
+    user-select: none;
+  }
+
+  #quote-title {
+    font-family: Arial, sans-serif;
+    direction: ltr;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+
+  hr {
+    width: 50%;
+    margin: 10px auto;
+    border: none;
+    border-top: 1px solid #ccc;
+  }
+
+  @font-face {
+    font-family: 'AmiriArabic';
+    src: local('Amiri'), local('Scheherazade New'), local('Times New Roman');
+    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  }
+
+  #quote-body {
+    font-family: 'Josefin Sans', 'Amiri', sans-serif;
+    direction: ltr;
+    white-space: pre-wrap;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    text-align: center;
+    color: #222;
+  }
+
+  /* Progress bar container */
+  #progress-container {
+    height: 6px;
+    background: #ddd;
+    border-radius: 3px;
+    margin-top: 1.5rem;
+    overflow: hidden;
+  }
+
+  /* Progress bar itself */
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #8bc34a);
+    width: 100%;
+    animation: progressShrink 30s linear forwards;
+  }
+
+  @keyframes progressShrink {
+    from { width: 100%; }
+    to { width: 0%; }
+  }
+</style>
+</head>
+<body>
+  <div id="quote-container">
+    <div id="quote-title">Loading...</div>
+    <hr />
+    <div id="quote-body"></div>
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+  </div>
+
+  <script>
+    const titleEl = document.getElementById('quote-title');
+    const bodyEl = document.getElementById('quote-body');
+    const progressBar = document.getElementById('progress-bar');
+    const refreshInterval = 30000; // 30 seconds
+
+    async function loadQuote() {
+      try {
+        const res = await fetch('/quotes');
+        const data = await res.json();
+        if (data.length > 0) {
+          titleEl.textContent = data[0].title || 'Quote';
+          bodyEl.innerHTML = data[0].html || '';
+          resetProgressBar();
+        } else {
+          titleEl.textContent = 'No Quotes Available';
+          bodyEl.textContent = '';
+          progressBar.style.width = '0%';
+        }
+      } catch (err) {
+        titleEl.textContent = 'Error loading quotes';
+        bodyEl.textContent = '';
+        progressBar.style.width = '0%';
+        console.error(err);
+      }
+    }
+
+    function resetProgressBar() {
+      progressBar.style.animation = 'none';
+      progressBar.offsetHeight; // trigger reflow
+      progressBar.style.animation = 'progressShrink 30s linear forwards';
+    }
+
+    loadQuote();
+    setInterval(loadQuote, refreshInterval);
+  </script>
+</body>
+</html>
