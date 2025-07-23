@@ -116,7 +116,7 @@
           const extraPerChar = 0.08; // per 10 chars
           let refreshTime = baseTime + (textLength / 10) * extraPerChar;
           if (refreshTime > 60) refreshTime = 60; // cap max
-          if (refreshTime < 15) refreshTime = 15; // min 15 sec
+          if (refreshTime < 10) refreshTime = 10; // min 10 sec
 
           resetProgressBar(refreshTime);
 
