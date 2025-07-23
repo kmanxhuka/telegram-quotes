@@ -23,7 +23,7 @@
     background: white;
     padding: 2rem;
     max-width: 700px;
-    width: 85%;
+    width: 90%;
     box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
     border-radius: 10px;
     user-select: none;
@@ -33,7 +33,7 @@
     font-family: Arial, sans-serif;
     direction: ltr;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-bottom: 0.5rem;
     color: #333;
   }
@@ -52,12 +52,12 @@
   }
 
   #quote-body {
-    font-family: 'Josefin Sans', 'Amiri', sans-serif;
+    font-family: 'Josefin Sans', 'AmiriArabic', sans-serif;
     direction: ltr;
     white-space: pre-wrap;
-    font-size: 2rem;
+    font-size: 1.3rem;
     line-height: 1.5;
-    text-align: center;
+    text-align: left;
     color: #222;
   }
 
@@ -98,37 +98,47 @@
     const titleEl = document.getElementById('quote-title');
     const bodyEl = document.getElementById('quote-body');
     const progressBar = document.getElementById('progress-bar');
-    const refreshInterval = 30000; // 30 seconds
+
+    let timerId = null;
 
     async function loadQuote() {
       try {
         const res = await fetch('/quotes');
         const data = await res.json();
+
         if (data.length > 0) {
           titleEl.textContent = data[0].title || 'Quote';
           bodyEl.innerHTML = data[0].html || '';
-          resetProgressBar();
+
+          // Calculate dynamic refresh interval based on text length
+          const textLength = bodyEl.innerText.length;
+          const baseTime = 10; // seconds
+          const extraPerChar = 0.08; // per 10 chars
+          let refreshTime = baseTime + (textLength / 10) * extraPerChar;
+          if (refreshTime > 60) refreshTime = 60; // cap max
+          if (refreshTime < 15) refreshTime = 15; // min 15 sec
+
+          resetProgressBar(refreshTime);
+
+          if (timerId) clearTimeout(timerId);
+          timerId = setTimeout(loadQuote, refreshTime * 1000);
         } else {
           titleEl.textContent = 'No Quotes Available';
           bodyEl.textContent = '';
           progressBar.style.width = '0%';
         }
       } catch (err) {
-        titleEl.textContent = 'Error loading quotes';
-        bodyEl.textContent = '';
-        progressBar.style.width = '0%';
         console.error(err);
       }
     }
 
-    function resetProgressBar() {
+    function resetProgressBar(seconds) {
       progressBar.style.animation = 'none';
-      progressBar.offsetHeight; // trigger reflow
-      progressBar.style.animation = 'progressShrink 30s linear forwards';
+      progressBar.offsetHeight; // force reflow
+      progressBar.style.animation = `progressShrink ${seconds}s linear forwards`;
     }
 
     loadQuote();
-    setInterval(loadQuote, refreshInterval);
   </script>
 </body>
 </html>
