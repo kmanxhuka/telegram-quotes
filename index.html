@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Telegram Quotes</title>
+<title>SHTEGU.IM Quotes</title>
 
 <!-- Google Fonts: Aref Ruqaa and Montserrat -->
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Montserrat&display=swap" rel="stylesheet" />
@@ -77,20 +77,14 @@
   }
 
   #quote-body {
-    font-family: 'Josefin Sans', 'AmiriArabic', sans-serif;
+    font-family: 'Aref Ruqaa', 'Josefin Sans', 'AmiriArabic', sans-serif;
+    direction: ltr;
     white-space: pre-wrap;
     font-size: 2rem;
     line-height: 1.5;
     text-align: center;
     color: var(--text-color);
     transition: color 0.5s ease;
-  }
-
-  .arabic-text {
-    font-family: 'Aref Ruqaa', serif;
-    direction: rtl;
-    unicode-bidi: embed;
-    display: inline-block;
   }
 
   #progress-container {
@@ -123,6 +117,8 @@
 </style>
 </head>
 <body>
+  <button id="theme-toggle" title="Toggle Theme">☀️</button>
+  
   <div id="quote-container">
     <button id="theme-toggle" title="Toggle Theme">☀️</button>
     <div id="quote-title">Loading...</div>
@@ -141,14 +137,6 @@
   let timerId = null;
   let manualOverride = false;
 
-  // Wrap Arabic text chunks with RTL span and arabic-text class
-  function wrapArabicText(html) {
-    const arabicRegex = /([\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+)/g;
-    return html.replace(arabicRegex, (match) => {
-      return `<span class="arabic-text" dir="rtl">${match}</span>`;
-    });
-  }
-
   async function loadQuote() {
     try {
       const res = await fetch('/quotes');
@@ -156,7 +144,7 @@
 
       if (data.length > 0) {
         titleEl.textContent = data[0].title || 'Quote';
-        bodyEl.innerHTML = wrapArabicText(data[0].html || '');
+        bodyEl.innerHTML = data[0].html || '';
 
         // Dynamic refresh timing
         const textLength = bodyEl.innerText.length;
