@@ -39,12 +39,13 @@
     transition: background 0.5s ease;
   }
 
-  /* Logo in the top-left corner */
+  /* Logo in top-left */
   #logo {
     position: fixed;
     top: 15px;
     left: 15px;
     height: 40px;
+    transition: opacity 0.5s ease;
   }
 
   /* Theme toggle button in top-right */
@@ -117,7 +118,7 @@
 </head>
 <body>
   <!-- Logo -->
-  <img id="logo" src="your-logo.png" alt="Logo" />
+  <img id="logo" src="day-logo.png" alt="Logo" />
 
   <!-- Theme toggle button -->
   <button id="theme-toggle" title="Toggle Theme">☀️</button>
@@ -136,6 +137,8 @@
   const bodyEl = document.getElementById('quote-body');
   const progressBar = document.getElementById('progress-bar');
   const themeToggleBtn = document.getElementById('theme-toggle');
+  const logoEl = document.getElementById('logo');
+
   let timerId = null;
   let manualOverride = false;
 
@@ -176,7 +179,7 @@
     progressBar.style.animation = `progressShrink ${seconds}s linear forwards`;
   }
 
-  // Auto Theme Switching for Suhareka
+  // Switch theme automatically
   async function setThemeByTime() {
     if (manualOverride) return;
 
@@ -192,22 +195,37 @@
       const now = new Date();
 
       if (now >= sunset || now <= sunrise) {
-        document.body.classList.add('night');
-        themeToggleBtn.textContent = '🌙';
+        setNightTheme();
       } else {
-        document.body.classList.remove('night');
-        themeToggleBtn.textContent = '☀️';
+        setDayTheme();
       }
     } catch (err) {
       console.error('Error fetching sunrise/sunset:', err);
     }
   }
 
+  function setNightTheme() {
+    document.body.classList.add('night');
+    themeToggleBtn.textContent = '🌙';
+    logoEl.src = 'night-logo.png';
+  }
+
+  function setDayTheme() {
+    document.body.classList.remove('night');
+    themeToggleBtn.textContent = '☀️';
+    logoEl.src = 'day-logo.png';
+  }
+
   // Manual theme toggle
   themeToggleBtn.addEventListener('click', () => {
     document.body.classList.toggle('night');
     manualOverride = true;
-    themeToggleBtn.textContent = document.body.classList.contains('night') ? '🌙' : '☀️';
+
+    if (document.body.classList.contains('night')) {
+      setNightTheme();
+    } else {
+      setDayTheme();
+    }
   });
 
   loadQuote();
