@@ -26,17 +26,6 @@
     transition: background 0.5s ease;
   }
 
-  /* Logo fixed at top center */
-  header {
-    text-align: center;
-    padding: 20px 0;
-  }
-
-  #logo {
-    max-height: 80px;
-    transition: opacity 0.5s ease;
-  }
-
   /* Theme toggle button in top-right */
   #theme-toggle {
     position: fixed;
@@ -125,11 +114,6 @@
 </style>
 </head>
 <body>
-  <!-- Logo always on top -->
-  <header>
-    <img id="logo" src="day-logo.png" alt="Logo" />
-  </header>
-
   <!-- Theme toggle button -->
   <button id="theme-toggle" title="Toggle Theme">☀️</button>
 
@@ -149,7 +133,6 @@
   const bodyEl = document.getElementById('quote-body');
   const progressBar = document.getElementById('progress-bar');
   const themeToggleBtn = document.getElementById('theme-toggle');
-  const logoEl = document.getElementById('logo');
 
   let timerId = null;
   let manualOverride = false;
@@ -207,37 +190,22 @@
       const now = new Date();
 
       if (now >= sunset || now <= sunrise) {
-        setNightTheme();
+        document.body.classList.add('night');
+        themeToggleBtn.textContent = '🌙';
       } else {
-        setDayTheme();
+        document.body.classList.remove('night');
+        themeToggleBtn.textContent = '☀️';
       }
     } catch (err) {
       console.error('Error fetching sunrise/sunset:', err);
     }
   }
 
-  function setNightTheme() {
-    document.body.classList.add('night');
-    themeToggleBtn.textContent = '🌙';
-    logoEl.src = 'night-logo.png';
-  }
-
-  function setDayTheme() {
-    document.body.classList.remove('night');
-    themeToggleBtn.textContent = '☀️';
-    logoEl.src = 'day-logo.png';
-  }
-
   // Manual theme toggle
   themeToggleBtn.addEventListener('click', () => {
     document.body.classList.toggle('night');
     manualOverride = true;
-
-    if (document.body.classList.contains('night')) {
-      setNightTheme();
-    } else {
-      setDayTheme();
-    }
+    themeToggleBtn.textContent = document.body.classList.contains('night') ? '🌙' : '☀️';
   });
 
   loadQuote();
