@@ -42,7 +42,7 @@
     width: 50%;
     margin: 10px auto;
     border: none;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #372914;
   }
 
   @font-face {
@@ -113,8 +113,8 @@
           // Calculate dynamic refresh interval based on text length
           const textLength = bodyEl.innerText.length;
           const baseTime = 10; // seconds
-          const extraPerChar = 0.1; // per 10 chars
-          let refreshTime = baseTime + (textLength / 10) * extraPerChar;
+          const extraPerChar = 0.1; // per 5 chars
+          let refreshTime = baseTime + (textLength / 5) * extraPerChar;
           if (refreshTime > 60) refreshTime = 60; // cap max
           if (refreshTime < 10) refreshTime = 10; // min 10 sec
 
