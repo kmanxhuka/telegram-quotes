@@ -5,28 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Telegram Quotes</title>
 
-<!-- Load Josefin Sans and Amiri fonts from Google Fonts -->
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Amiri&display=swap" rel="stylesheet" />
 
 <style>
+  :root {
+    --bg-color: #f0f0f0;
+    --container-bg: #fff;
+    --text-color: #271c14;
+    --progress-gradient: linear-gradient(90deg, #4caf50, #8bc34a);
+  }
+
   body {
-    background: #f0f0f0;
+    background: var(--bg-color);
     font-family: Arial, sans-serif;
     display: flex;
     height: 100vh;
     margin: 0;
     justify-content: center;
     align-items: center;
+    transition: background 0.5s ease;
   }
 
   #quote-container {
-    background: white;
+    background: var(--container-bg);
     padding: 2rem;
     max-width: 700px;
     width: 90%;
     box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
     border-radius: 10px;
     user-select: none;
+    position: relative;
+    transition: background 0.5s ease;
+  }
+
+  /* Theme toggle button */
+  #theme-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.8rem;
+    color: var(--text-color);
+    transition: color 0.3s ease;
   }
 
   #quote-title {
@@ -35,7 +58,8 @@
     text-align: center;
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    color: #271c14;
+    color: var(--text-color);
+    transition: color 0.5s ease;
   }
 
   hr {
@@ -58,10 +82,10 @@
     font-size: 2rem;
     line-height: 1.5;
     text-align: left;
-    color: #271c14;
+    color: var(--text-color);
+    transition: color 0.5s ease;
   }
 
-  /* Progress bar container */
   #progress-container {
     height: 6px;
     background: #ddd;
@@ -70,10 +94,9 @@
     overflow: hidden;
   }
 
-  /* Progress bar itself */
   #progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #4caf50, #8bc34a);
+    background: var(--progress-gradient);
     width: 100%;
     animation: progressShrink 30s linear forwards;
   }
@@ -82,10 +105,19 @@
     from { width: 100%; }
     to { width: 0%; }
   }
+
+  /* Night theme */
+  body.night {
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #f5f5f5;
+    --progress-gradient: linear-gradient(90deg, #2196f3, #64b5f6);
+  }
 </style>
 </head>
 <body>
   <div id="quote-container">
+    <button id="theme-toggle" title="Toggle Theme">☀️</button>
     <div id="quote-title">Loading...</div>
     <hr />
     <div id="quote-body"></div>
@@ -94,51 +126,88 @@
     </div>
   </div>
 
-  <script>
-    const titleEl = document.getElementById('quote-title');
-    const bodyEl = document.getElementById('quote-body');
-    const progressBar = document.getElementById('progress-bar');
+<script>
+  const titleEl = document.getElementById('quote-title');
+  const bodyEl = document.getElementById('quote-body');
+  const progressBar = document.getElementById('progress-bar');
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  let timerId = null;
+  let manualOverride = false;
 
-    let timerId = null;
+  async function loadQuote() {
+    try {
+      const res = await fetch('/quotes');
+      const data = await res.json();
 
-    async function loadQuote() {
-      try {
-        const res = await fetch('/quotes');
-        const data = await res.json();
+      if (data.length > 0) {
+        titleEl.textContent = data[0].title || 'Quote';
+        bodyEl.innerHTML = data[0].html || '';
 
-        if (data.length > 0) {
-          titleEl.textContent = data[0].title || 'Quote';
-          bodyEl.innerHTML = data[0].html || '';
+        // Dynamic refresh timing
+        const textLength = bodyEl.innerText.length;
+        const baseTime = 2;
+        const extraPerChar = 0.2;
+        let refreshTime = baseTime + (textLength / 3) * extraPerChar;
+        if (refreshTime > 60) refreshTime = 60;
+        if (refreshTime < 2) refreshTime = 2;
 
-          // Calculate dynamic refresh interval based on text length
-          const textLength = bodyEl.innerText.length;
-          const baseTime = 2; // seconds
-          const extraPerChar = 0.2; // per 5 chars
-          let refreshTime = baseTime + (textLength / 3) * extraPerChar;
-          if (refreshTime > 60) refreshTime = 60; // cap max
-          if (refreshTime < 2) refreshTime = 2; // min 2 sec
+        resetProgressBar(refreshTime);
 
-          resetProgressBar(refreshTime);
-
-          if (timerId) clearTimeout(timerId);
-          timerId = setTimeout(loadQuote, refreshTime * 1000);
-        } else {
-          titleEl.textContent = 'No Quotes Available';
-          bodyEl.textContent = '';
-          progressBar.style.width = '0%';
-        }
-      } catch (err) {
-        console.error(err);
+        if (timerId) clearTimeout(timerId);
+        timerId = setTimeout(loadQuote, refreshTime * 1000);
+      } else {
+        titleEl.textContent = 'No Quotes Available';
+        bodyEl.textContent = '';
+        progressBar.style.width = '0%';
       }
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    function resetProgressBar(seconds) {
-      progressBar.style.animation = 'none';
-      progressBar.offsetHeight; // force reflow
-      progressBar.style.animation = `progressShrink ${seconds}s linear forwards`;
+  function resetProgressBar(seconds) {
+    progressBar.style.animation = 'none';
+    progressBar.offsetHeight; // force reflow
+    progressBar.style.animation = `progressShrink ${seconds}s linear forwards`;
+  }
+
+  // Auto Theme Switching for Suhareka
+  async function setThemeByTime() {
+    if (manualOverride) return;
+
+    const lat = 42.36;
+    const lon = 20.82;
+
+    try {
+      const res = await fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0`);
+      const data = await res.json();
+
+      const sunrise = new Date(data.results.sunrise);
+      const sunset = new Date(data.results.sunset);
+      const now = new Date();
+
+      if (now >= sunset || now <= sunrise) {
+        document.body.classList.add('night');
+        themeToggleBtn.textContent = '🌙';
+      } else {
+        document.body.classList.remove('night');
+        themeToggleBtn.textContent = '☀️';
+      }
+    } catch (err) {
+      console.error('Error fetching sunrise/sunset:', err);
     }
+  }
 
-    loadQuote();
-  </script>
+  // Manual theme toggle
+  themeToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('night');
+    manualOverride = true;
+    themeToggleBtn.textContent = document.body.classList.contains('night') ? '🌙' : '☀️';
+  });
+
+  loadQuote();
+  setThemeByTime();
+  setInterval(setThemeByTime, 60 * 60 * 1000); // every hour
+</script>
 </body>
 </html>
