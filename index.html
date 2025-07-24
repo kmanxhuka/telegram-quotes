@@ -20,7 +20,7 @@
   }
 
   #quote-container {
-    background: #f4cb17;
+    background: white;
     padding: 2rem;
     max-width: 700px;
     width: 90%;
@@ -42,7 +42,7 @@
     width: 50%;
     margin: 10px auto;
     border: none;
-    border-top: 1px solid #372914;
+    border-top: 1px solid #ccc;
   }
 
   @font-face {
@@ -113,7 +113,7 @@
           // Calculate dynamic refresh interval based on text length
           const textLength = bodyEl.innerText.length;
           const baseTime = 10; // seconds
-          const extraPerChar = 0.3; // per 5 chars
+          const extraPerChar = 0.2; // per 5 chars
           let refreshTime = baseTime + (textLength / 3) * extraPerChar;
           if (refreshTime > 60) refreshTime = 60; // cap max
           if (refreshTime < 10) refreshTime = 10; // min 10 sec
