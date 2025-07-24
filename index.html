@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SHTEGU.IM Quotes</title>
 
-<!-- Google Fonts: Aref Ruqaa and Montserrat -->
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Montserrat&display=swap" rel="stylesheet" />
 
 <style>
@@ -34,29 +34,35 @@
     width: 90%;
     box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
     border-radius: 10px;
-    user-select: none;
+    text-align: center;
     position: relative;
     transition: background 0.5s ease;
   }
 
-  /* Theme toggle button */
+  /* Logo in the top-left corner */
+  #logo {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    height: 40px;
+  }
+
+  /* Theme toggle button in top-right */
   #theme-toggle {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.8rem;
-  color: var(--text-color);
-  transition: color 0.3s ease;
-  z-index: 1000;
-}
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.8rem;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+    z-index: 1000;
+  }
 
   #quote-title {
-    font-family: 'Montserrat', Arial, sans-serif;
-    direction: ltr;
-    text-align: center;
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.6rem;
     margin-bottom: 0.5rem;
     color: var(--text-color);
@@ -70,15 +76,8 @@
     border-top: 1px solid #ccc;
   }
 
-  @font-face {
-    font-family: 'AmiriArabic';
-    src: local('Amiri'), local('Scheherazade New'), local('Times New Roman');
-    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-  }
-
   #quote-body {
-    font-family: 'Aref Ruqaa', 'Josefin Sans', 'AmiriArabic', sans-serif;
-    direction: ltr;
+    font-family: 'Aref Ruqaa', serif;
     white-space: pre-wrap;
     font-size: 2rem;
     line-height: 1.5;
@@ -117,10 +116,13 @@
 </style>
 </head>
 <body>
+  <!-- Logo -->
+  <img id="logo" src="your-logo.png" alt="Logo" />
+
+  <!-- Theme toggle button -->
   <button id="theme-toggle" title="Toggle Theme">☀️</button>
-  
+
   <div id="quote-container">
-    <button id="theme-toggle" title="Toggle Theme">☀️</button>
     <div id="quote-title">Loading...</div>
     <hr />
     <div id="quote-body"></div>
