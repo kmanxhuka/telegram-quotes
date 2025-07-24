@@ -20,31 +20,18 @@
     background: var(--bg-color);
     font-family: Arial, sans-serif;
     display: flex;
-    height: 100vh;
-    margin: 0;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+    margin: 0;
     transition: background 0.5s ease;
   }
 
-  #quote-container {
-    background: var(--container-bg);
-    padding: 2rem;
-    max-width: 700px;
-    width: 90%;
-    box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
-    border-radius: 10px;
-    text-align: center;
-    position: relative;
-    transition: background 0.5s ease;
-  }
-
-  /* Logo in top-left */
+  /* Logo centered above quotes */
   #logo {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    height: 96px;
+    max-height: 80px;
+    margin-bottom: 20px;
     transition: opacity 0.5s ease;
   }
 
@@ -60,6 +47,17 @@
     color: var(--text-color);
     transition: color 0.3s ease;
     z-index: 1000;
+  }
+
+  #quote-container {
+    background: var(--container-bg);
+    padding: 2rem;
+    max-width: 700px;
+    width: 90%;
+    box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
+    border-radius: 10px;
+    text-align: center;
+    transition: background 0.5s ease;
   }
 
   #quote-title {
@@ -117,7 +115,7 @@
 </style>
 </head>
 <body>
-  <!-- Logo -->
+  <!-- Logo centered -->
   <img id="logo" src="day-logo.png" alt="Logo" />
 
   <!-- Theme toggle button -->
