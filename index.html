@@ -112,11 +112,11 @@
 
           // Calculate dynamic refresh interval based on text length
           const textLength = bodyEl.innerText.length;
-          const baseTime = 10; // seconds
+          const baseTime = 2; // seconds
           const extraPerChar = 0.2; // per 5 chars
           let refreshTime = baseTime + (textLength / 3) * extraPerChar;
           if (refreshTime > 60) refreshTime = 60; // cap max
-          if (refreshTime < 10) refreshTime = 10; // min 10 sec
+          if (refreshTime < 2) refreshTime = 2; // min 2 sec
 
           resetProgressBar(refreshTime);
 
