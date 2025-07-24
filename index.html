@@ -6,7 +6,7 @@
 <title>SHTEGU.IM Quotes</title>
 
 <!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Montserrat&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Montserrat&family=Amiri&display=swap" rel="stylesheet" />
 
 <style>
   :root {
@@ -26,7 +26,7 @@
     transition: background 0.5s ease;
   }
 
-  /* Theme toggle button in top-right */
+  /* Theme toggle button */
   #theme-toggle {
     position: fixed;
     top: 15px;
@@ -40,7 +40,6 @@
     z-index: 1000;
   }
 
-  /* Main content centered */
   main {
     flex: 1;
     display: flex;
@@ -84,6 +83,11 @@
     transition: color 0.5s ease;
   }
 
+  /* Force Amiri font for ﷺ (U+FDFA) */
+  #quote-body .salawat {
+    font-family: 'Amiri', serif !important;
+  }
+
   #progress-container {
     height: 6px;
     background: #ddd;
@@ -114,7 +118,6 @@
 </style>
 </head>
 <body>
-  <!-- Theme toggle button -->
   <button id="theme-toggle" title="Toggle Theme">☀️</button>
 
   <main>
@@ -144,7 +147,12 @@
 
       if (data.length > 0) {
         titleEl.textContent = data[0].title || 'Quote';
-        bodyEl.innerHTML = data[0].html || '';
+        let quoteHtml = data[0].html || '';
+
+        // Wrap ﷺ with span for Amiri font
+        quoteHtml = quoteHtml.replace(/ﷺ/g, '<span class="salawat">ﷺ</span>');
+
+        bodyEl.innerHTML = quoteHtml;
 
         // Dynamic refresh timing
         const textLength = bodyEl.innerText.length;
