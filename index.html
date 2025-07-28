@@ -26,7 +26,6 @@
     transition: background 0.5s ease;
   }
 
-  /* Theme toggle button */
   #theme-toggle {
     position: fixed;
     top: 15px;
@@ -80,10 +79,9 @@
     line-height: 1.5;
     text-align: center;
     color: var(--text-color);
-    transition: color 0.5s ease;
+    transition: color 0.5s ease, font-size 0.3s ease;
   }
 
-  /* Force Amiri font for ﷺ (U+FDFA) */
   #quote-body .salawat {
     font-family: 'Amiri', serif !important;
   }
@@ -108,7 +106,6 @@
     to { width: 0%; }
   }
 
-  /* Night theme */
   body.night {
     --bg-color: #121212;
     --container-bg: #1e1e1e;
@@ -149,18 +146,25 @@
         titleEl.textContent = data[0].title || 'Quote';
         let quoteHtml = data[0].html || '';
 
-        // Wrap ﷺ with span for Amiri font
+        // Wrap ﷺ with Amiri font span
         quoteHtml = quoteHtml.replace(/ﷺ/g, '<span class="salawat">ﷺ</span>');
 
         bodyEl.innerHTML = quoteHtml;
 
-        // Dynamic refresh timing
+        // Adjust font size based on total length
         const textLength = bodyEl.innerText.length;
+        let fontSize = 2.0; // rem
+        if (textLength > 400) {
+          const extraChunks = Math.floor((textLength - 400) / 100);
+          fontSize = Math.max(2.0 - (extraChunks * 0.1), 1.8);
+        }
+        bodyEl.style.fontSize = fontSize + 'rem';
+
+        // Set refresh timing
         const baseTime = 2;
         const extraPerChar = 0.2;
         let refreshTime = baseTime + (textLength / 3) * extraPerChar;
-        if (refreshTime > 60) refreshTime = 60;
-        if (refreshTime < 2) refreshTime = 2;
+        refreshTime = Math.min(Math.max(refreshTime, 2), 60);
 
         resetProgressBar(refreshTime);
 
@@ -209,7 +213,6 @@
     }
   }
 
-  // Manual theme toggle
   themeToggleBtn.addEventListener('click', () => {
     document.body.classList.toggle('night');
     manualOverride = true;
