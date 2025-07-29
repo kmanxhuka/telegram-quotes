@@ -1,98 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Suhareka Weather</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        transition: background 0.5s ease;
+  <style>
+    .qr-circle {
+      fill: black;
     }
-    .weather-card {
-        width: 320px;
-        padding: 20px;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        transition: background 0.5s, color 0.5s;
-    }
-    .weather-card img {
-        width: 80px;
-    }
-    .temp {
-        font-size: 2.5rem;
-        font-weight: bold;
-    }
-    .details {
-        margin-top: 10px;
-        font-size: 1rem;
-    }
-    .day-theme {
-        background: #ffffff;
-        color: #222;
-    }
-    .night-theme {
-        background: #222;
-        color: #f1f1f1;
-    }
-</style>
+  </style>
 </head>
 <body>
-<div class="weather-card day-theme" id="weatherCard">
-    <h2>Suhareka Weather</h2>
-    <img id="weatherIcon" src="" alt="Weather Icon">
-    <div class="temp" id="temp">--°C</div>
-    <div class="details" id="details">Loading...</div>
-</div>
+  <div id="qrcode"></div>
 
-<script>
-const apiKey = "92d25e9f1fe93b3117ba8c87a625d227"; // Your OpenWeather API Key
-const city = "Suhareka";
-const units = "metric"; // Celsius
-const lang = "en";
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
+  <script>
+    const qr = qrcode(0, 'L');
+    qr.addData("https://example.com");
+    qr.make();
 
-async function fetchWeather() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}&lang=${lang}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const moduleCount = qr.getModuleCount();
+    const cellSize = 10;
+    const svgSize = moduleCount * cellSize;
 
-    const temp = Math.round(data.main.temp);
-    const description = data.weather[0].description;
-    const icon = data.weather[0].icon;
-    const wind = (data.wind.speed * 3.6).toFixed(1); // Convert m/s to km/h
-    const humidity = data.main.humidity;
+    let svg = `<svg width="${svgSize}" height="${svgSize}" xmlns="http://www.w3.org/2000/svg">`;
 
-    document.getElementById("temp").textContent = `${temp}°C`;
-    document.getElementById("details").innerHTML = `
-        ${description}<br>
-        Wind: ${wind} km/h | Humidity: ${humidity}%
-    `;
-    document.getElementById("weatherIcon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-
-    setTheme();
-}
-
-function setTheme() {
-    const hour = new Date().getHours();
-    const card = document.getElementById("weatherCard");
-    if (hour >= 19 || hour < 6) {
-        card.classList.remove("day-theme");
-        card.classList.add("night-theme");
-        document.body.style.background = "#121212";
-    } else {
-        card.classList.remove("night-theme");
-        card.classList.add("day-theme");
-        document.body.style.background = "#e4f1ff";
+    for (let row = 0; row < moduleCount; row++) {
+      for (let col = 0; col < moduleCount; col++) {
+        if (qr.isDark(row, col)) {
+          const cx = col * cellSize + cellSize / 2;
+          const cy = row * cellSize + cellSize / 2;
+          const r = cellSize / 2;
+          svg += `<circle cx="${cx}" cy="${cy}" r="${r}" class="qr-circle" />`;
+        }
+      }
     }
-}
 
-fetchWeather();
-</script>
+    svg += `</svg>`;
+    document.getElementById('qrcode').innerHTML = svg;
+  </script>
 </body>
 </html>
