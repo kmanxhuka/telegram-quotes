@@ -1,213 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Telegram Quotes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SHTEGU.IM Quotes</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Amiri&display=swap" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Montserrat&family=Amiri&display=swap" rel="stylesheet" />
 
-<style>
-  :root {
-    --bg-color: #f0f0f0;
-    --container-bg: #fff;
-    --text-color: #271c14;
-    --progress-gradient: linear-gradient(90deg, #4caf50, #8bc34a);
-  }
+  <style>
+    :root {
+      --bg-color: #f0f0f0;
+      --container-bg: #fff;
+      --text-color: #271c14;
+      --progress-gradient: linear-gradient(90deg, #4caf50, #8bc34a);
+    }
 
-  body {
-    background: var(--bg-color);
-    font-family: Arial, sans-serif;
-    display: flex;
-    height: 100vh;
-    margin: 0;
-    justify-content: center;
-    align-items: center;
-    transition: background 0.5s ease;
-  }
+    body {
+      background: var(--bg-color);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: background 0.5s ease;
+    }
 
-  #quote-container {
-    background: var(--container-bg);
-    padding: 2rem;
-    max-width: 700px;
-    width: 90%;
-    box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
-    border-radius: 10px;
-    user-select: none;
-    position: relative;
-    transition: background 0.5s ease;
-  }
+    #theme-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.8rem;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+      z-index: 1000;
+    }
 
-  /* Theme toggle button */
-  #theme-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.8rem;
-    color: var(--text-color);
-    transition: color 0.3s ease;
-  }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  #quote-title {
-    font-family: Arial, sans-serif;
-    direction: ltr;
-    text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
-    transition: color 0.5s ease;
-  }
+    #quote-container {
+      background: var(--container-bg);
+      padding: 2rem;
+      max-width: 700px;
+      width: 90%;
+      box-shadow: 0 0 20px rgb(0 0 0 / 0.1);
+      border-radius: 10px;
+      text-align: center;
+      transition: background 0.5s ease;
+    }
 
-  hr {
-    width: 50%;
-    margin: 10px auto;
-    border: none;
-    border-top: 1px solid #ccc;
-  }
+    #quote-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+      transition: color 0.5s ease;
+    }
 
-  @font-face {
-    font-family: 'AmiriArabic';
-    src: local('Amiri'), local('Scheherazade New'), local('Times New Roman');
-    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-  }
+    hr {
+      width: 50%;
+      margin: 10px auto;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
 
-  #quote-body {
-    font-family: 'Josefin Sans', 'AmiriArabic', sans-serif;
-    direction: ltr;
-    white-space: pre-wrap;
-    font-size: 2rem;
-    line-height: 1.5;
-    text-align: left;
-    color: var(--text-color);
-    transition: color 0.5s ease;
-  }
+    #quote-body {
+      font-family: 'Aref Ruqaa', serif;
+      white-space: pre-wrap;
+      font-size: 2rem;
+      line-height: 1.5;
+      text-align: center;
+      color: var(--text-color);
+      transition: color 0.5s ease, font-size 0.5s ease; /* 👈 Smooth font-size transition */
+    }
 
-  #progress-container {
-    height: 6px;
-    background: #ddd;
-    border-radius: 3px;
-    margin-top: 1.5rem;
-    overflow: hidden;
-  }
+    #quote-body .salawat {
+      font-family: 'Amiri', serif !important;
+    }
 
-  #progress-bar {
-    height: 100%;
-    background: var(--progress-gradient);
-    width: 100%;
-    animation: progressShrink 30s linear forwards;
-  }
+    #progress-container {
+      height: 6px;
+      background: #ddd;
+      border-radius: 3px;
+      margin-top: 1.5rem;
+      overflow: hidden;
+    }
 
-  @keyframes progressShrink {
-    from { width: 100%; }
-    to { width: 0%; }
-  }
+    #progress-bar {
+      height: 100%;
+      background: var(--progress-gradient);
+      width: 100%;
+      animation: progressShrink 30s linear forwards;
+    }
 
-  /* Night theme */
-  body.night {
-    --bg-color: #121212;
-    --container-bg: #1e1e1e;
-    --text-color: #f5f5f5;
-    --progress-gradient: linear-gradient(90deg, #2196f3, #64b5f6);
-  }
-</style>
+    @keyframes progressShrink {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+
+    body.night {
+      --bg-color: #121212;
+      --container-bg: #1e1e1e;
+      --text-color: #f5f5f5;
+      --progress-gradient: linear-gradient(90deg, #2196f3, #64b5f6);
+    }
+  </style>
 </head>
 <body>
-  <div id="quote-container">
-    <button id="theme-toggle" title="Toggle Theme">☀️</button>
-    <div id="quote-title">Loading...</div>
-    <hr />
-    <div id="quote-body"></div>
-    <div id="progress-container">
-      <div id="progress-bar"></div>
+  <button id="theme-toggle" title="Toggle Theme">☀️</button>
+
+  <main>
+    <div id="quote-container">
+      <div id="quote-title">Loading...</div>
+      <hr />
+      <div id="quote-body"></div>
+      <div id="progress-container">
+        <div id="progress-bar"></div>
+      </div>
     </div>
-  </div>
+  </main>
 
-<script>
-  const titleEl = document.getElementById('quote-title');
-  const bodyEl = document.getElementById('quote-body');
-  const progressBar = document.getElementById('progress-bar');
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  let timerId = null;
-  let manualOverride = false;
+  <script>
+    const titleEl = document.getElementById('quote-title');
+    const bodyEl = document.getElementById('quote-body');
+    const progressBar = document.getElementById('progress-bar');
+    const themeToggleBtn = document.getElementById('theme-toggle');
 
-  async function loadQuote() {
-    try {
-      const res = await fetch('/quotes');
-      const data = await res.json();
+    let timerId = null;
+    let manualOverride = false;
 
-      if (data.length > 0) {
-        titleEl.textContent = data[0].title || 'Quote';
-        bodyEl.innerHTML = data[0].html || '';
+    async function loadQuote() {
+      try {
+        const res = await fetch('/quotes');
+        const data = await res.json();
 
-        // Dynamic refresh timing
-        const textLength = bodyEl.innerText.length;
-        const baseTime = 2;
-        const extraPerChar = 0.2;
-        let refreshTime = baseTime + (textLength / 3) * extraPerChar;
-        if (refreshTime > 60) refreshTime = 60;
-        if (refreshTime < 2) refreshTime = 2;
+        if (data.length > 0) {
+          titleEl.textContent = data[0].title || 'Quote';
+          let quoteHtml = data[0].html || '';
 
-        resetProgressBar(refreshTime);
+          // Wrap ﷺ with span
+          quoteHtml = quoteHtml.replace(/ﷺ/g, '<span class="salawat">ﷺ</span>');
 
-        if (timerId) clearTimeout(timerId);
-        timerId = setTimeout(loadQuote, refreshTime * 1000);
-      } else {
-        titleEl.textContent = 'No Quotes Available';
-        bodyEl.textContent = '';
-        progressBar.style.width = '0%';
+          bodyEl.innerHTML = quoteHtml;
+
+          // Adjust font size based on character length
+          const textLength = bodyEl.innerText.length;
+          let fontSize = 2.0;
+          if (textLength > 400) {
+            const extra = Math.floor((textLength - 400) / 100);
+            fontSize = Math.max(1.8, 2.0 - (extra * 0.1));
+          }
+          bodyEl.style.fontSize = `${fontSize}rem`;
+
+          // Dynamic refresh timing
+          const baseTime = 2;
+          const extraPerChar = 0.2;
+          let refreshTime = baseTime + (textLength / 3) * extraPerChar;
+          refreshTime = Math.max(2, Math.min(refreshTime, 60));
+
+          resetProgressBar(refreshTime);
+
+          if (timerId) clearTimeout(timerId);
+          timerId = setTimeout(loadQuote, refreshTime * 1000);
+        } else {
+          titleEl.textContent = 'No Quotes Available';
+          bodyEl.textContent = '';
+          progressBar.style.width = '0%';
+        }
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.error(err);
     }
-  }
 
-  function resetProgressBar(seconds) {
-    progressBar.style.animation = 'none';
-    progressBar.offsetHeight; // force reflow
-    progressBar.style.animation = `progressShrink ${seconds}s linear forwards`;
-  }
+    function resetProgressBar(seconds) {
+      progressBar.style.animation = 'none';
+      progressBar.offsetHeight; // force reflow
+      progressBar.style.animation = `progressShrink ${seconds}s linear forwards`;
+    }
 
-  // Auto Theme Switching for Suhareka
-  async function setThemeByTime() {
-    if (manualOverride) return;
+    async function setThemeByTime() {
+      if (manualOverride) return;
 
-    const lat = 42.36;
-    const lon = 20.82;
+      const lat = 42.36;
+      const lon = 20.82;
 
-    try {
-      const res = await fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0`);
-      const data = await res.json();
+      try {
+        const res = await fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0`);
+        const data = await res.json();
 
-      const sunrise = new Date(data.results.sunrise);
-      const sunset = new Date(data.results.sunset);
-      const now = new Date();
+        const sunrise = new Date(data.results.sunrise);
+        const sunset = new Date(data.results.sunset);
+        const now = new Date();
 
-      if (now >= sunset || now <= sunrise) {
-        document.body.classList.add('night');
-        themeToggleBtn.textContent = '🌙';
-      } else {
-        document.body.classList.remove('night');
-        themeToggleBtn.textContent = '☀️';
+        if (now >= sunset || now <= sunrise) {
+          document.body.classList.add('night');
+          themeToggleBtn.textContent = '🌙';
+        } else {
+          document.body.classList.remove('night');
+          themeToggleBtn.textContent = '☀️';
+        }
+      } catch (err) {
+        console.error('Error fetching sunrise/sunset:', err);
       }
-    } catch (err) {
-      console.error('Error fetching sunrise/sunset:', err);
     }
-  }
 
-  // Manual theme toggle
-  themeToggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('night');
-    manualOverride = true;
-    themeToggleBtn.textContent = document.body.classList.contains('night') ? '🌙' : '☀️';
-  });
+    themeToggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('night');
+      manualOverride = true;
+      themeToggleBtn.textContent = document.body.classList.contains('night') ? '🌙' : '☀️';
+    });
 
-  loadQuote();
-  setThemeByTime();
-  setInterval(setThemeByTime, 60 * 60 * 1000); // every hour
-</script>
+    loadQuote();
+    setThemeByTime();
+    setInterval(setThemeByTime, 60 * 60 * 1000);
+  </script>
 </body>
 </html>
