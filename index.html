@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="manifest" href="/manifest.json">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f4cb17">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SHTEGU.IM Quotes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>SHTEGU.IM Quotes</title>
 
 <!-- Google Fonts -->
@@ -231,6 +238,16 @@ body.night #quote-title {
   loadQuote();
   setThemeByTime();
   setInterval(setThemeByTime, 60 * 60 * 1000); // every hour
+  if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(() => {
+      console.log('✅ Service Worker Registered');
+    }).catch(err => {
+      console.error('❌ Service Worker Error:', err);
+    });
+  });
+}
+
 </script>
 </body>
 </html>
