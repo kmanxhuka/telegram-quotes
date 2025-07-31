@@ -248,6 +248,15 @@ body.night #quote-title {
   });
 }
 
+document.body.addEventListener('click', handleImmediateRefresh);
+document.body.addEventListener('touchstart', handleImmediateRefresh);
+
+function handleImmediateRefresh(e) {
+  if (e.target.closest('#theme-toggle')) return; // Don't refresh on theme button
+  if (timerId) clearTimeout(timerId);
+  loadQuote();
+}
+
 </script>
 </body>
 </html>
