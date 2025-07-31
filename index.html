@@ -248,7 +248,7 @@ body.night #quote-title {
   });
 }
 
-document.body.addEventListener('touchstart', handleImmediateRefresh);
+document.body.addEventListener('touchend', handleImmediateRefresh);
 
 function handleImmediateRefresh(e) {
   if (e.target.closest('#theme-toggle')) return; // Don't refresh on theme button
